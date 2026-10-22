@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mana Styles</title>
+<style>
+:root { --bg:#f6f4ef; --panel:#ffffff; --ink:#1d2126; --muted:#646a72; --line:#e2dfd8; --accent:#2f6fb3; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#14161a; --panel:#1d2026; --ink:#e9e7e2; --muted:#9aa1a9; --line:#2c3037; --accent:#7fb0e6; } }
+:root[data-theme="dark"] { --bg:#14161a; --panel:#1d2026; --ink:#e9e7e2; --muted:#9aa1a9; --line:#2c3037; --accent:#7fb0e6; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+main { max-width:860px; margin:0 auto; padding:28px 16px 56px; }
+h2 { font-size:24px; margin:30px 0 4px; line-height:1.2; } h2:first-child { margin-top:0; }
+p { margin:0 0 10px; } a { color:var(--accent); }
+.jump { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 14px; }
+.jump button { font:inherit; font-size:14px; color:var(--ink); background:var(--panel); border:1px solid var(--line); border-left:5px solid; border-radius:7px; padding:5px 11px; cursor:pointer; }
+.card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-bottom:12px; }
+.card h3 { margin:0 0 8px; font-size:17px; }
+audio { width:100%; display:block; }
+footer { margin-top:40px; padding-top:16px; border-top:1px solid var(--line); font-size:14px; color:var(--muted); }
+</style></head><body><main id="main">
+<footer>Music: Hiroki Kikuta, Square Enix.</footer>
+</main>
+<script>
+const SONGS = [{"title": "Fear of the Heavens", "original": "https://www.youtube.com/watch?v=y20pc_0zFgg&t=10s", "original_label": "Original (SNES title screen)", "sections": [{"name": "Intro", "t": 0.0, "colour": "#5b8def"}, {"name": "Verse", "t": 24.55, "colour": "#3fb27f"}, {"name": "Climax", "t": 49.09, "colour": "#e0a03a"}, {"name": "Resolution", "t": 73.64, "colour": "#d65a7a"}, {"name": "Coda", "t": 85.91, "colour": "#8a7fd6"}], "takes": [{"label": "80s arena rock", "src": "audio/fear-of-the-heavens-arena.mp3"}, {"label": "Punk rock", "src": "audio/fear-of-the-heavens-punk.mp3"}, {"label": "Neo-classical", "src": "audio/fear-of-the-heavens-neoclassical.mp3"}, {"label": "Techno / trance", "src": "audio/fear-of-the-heavens-trance.mp3"}, {"label": "Power metal", "src": "audio/fear-of-the-heavens-powermetal.mp3"}, {"label": "Baroque", "src": "audio/fear-of-the-heavens-baroque.mp3"}]}, {"title": "Flight into the Unknown", "original": "https://www.youtube.com/watch?v=7nZyFQBD-WE", "original_label": "Original", "sections": [{"name": "Intro", "t": 0.0, "colour": "#5b8def"}, {"name": "Theme", "t": 1.84, "colour": "#3fb27f"}, {"name": "Theme again", "t": 18.41, "colour": "#e0a03a"}, {"name": "Bridge", "t": 34.98, "colour": "#d65a7a"}, {"name": "Bridge again", "t": 49.7, "colour": "#8a7fd6"}, {"name": "Outro", "t": 64.43, "colour": "#6a8f9f"}], "takes": [{"label": "80s arena rock", "src": "audio/flight-into-the-unknown-arena.mp3"}, {"label": "Baroque", "src": "audio/flight-into-the-unknown-baroque.mp3"}]}];
+const main = document.getElementById("main"), footer = main.querySelector("footer"), all = [];
+for (const song of SONGS) {
+  if (!song.takes.length) continue;
+  const sec = document.createElement("section");
+  const h = document.createElement("h2"); h.textContent = song.title; sec.appendChild(h);
+  if (song.original) {
+    const p = document.createElement("p"), a = document.createElement("a");
+    a.href = song.original; a.textContent = song.original_label; p.appendChild(a); sec.appendChild(p);
+  }
+  const jump = document.createElement("div"); jump.className = "jump"; sec.appendChild(jump);
+  const players = [];
+  for (const t of song.takes) {
+    const c = document.createElement("div"); c.className = "card";
+    c.innerHTML = `<h3></h3><audio controls preload="metadata"></audio>`;
+    c.querySelector("h3").textContent = t.label;
+    const a = c.querySelector("audio"); a.src = t.src; players.push(a); all.push(a);
+    a.addEventListener("play", () => all.forEach(p => { if (p !== a) p.pause(); }));
+    sec.appendChild(c);
+  }
+  for (const s of song.sections) {
+    const b = document.createElement("button"); b.textContent = s.name; b.style.borderLeftColor = s.colour;
+    b.onclick = () => players.forEach(p => { p.currentTime = s.t; }); jump.appendChild(b);
+  }
+  main.insertBefore(sec, footer);
+}
+</script></body></html>
