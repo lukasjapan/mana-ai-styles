@@ -9,9 +9,7 @@
 body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 main { max-width:860px; margin:0 auto; padding:28px 16px 56px; }
 h2 { font-size:24px; margin:30px 0 4px; line-height:1.2; } h2:first-child { margin-top:0; }
-p { margin:0 0 10px; } a { color:var(--accent); }
-.jump { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 14px; }
-.jump button { font:inherit; font-size:14px; color:var(--ink); background:var(--panel); border:1px solid var(--line); border-left:5px solid; border-radius:7px; padding:5px 11px; cursor:pointer; }
+p { margin:0 0 14px; } a { color:var(--accent); }
 .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-bottom:12px; }
 .card h3 { margin:0 0 8px; font-size:17px; }
 audio { width:100%; display:block; }
@@ -30,7 +28,6 @@ for (const song of SONGS) {
     const p = document.createElement("p"), a = document.createElement("a");
     a.href = song.original; a.textContent = song.original_label; p.appendChild(a); sec.appendChild(p);
   }
-  const jump = document.createElement("div"); jump.className = "jump"; sec.appendChild(jump);
   const players = [];
   for (const t of song.takes) {
     const c = document.createElement("div"); c.className = "card";
@@ -39,10 +36,6 @@ for (const song of SONGS) {
     const a = c.querySelector("audio"); a.src = t.src; players.push(a); all.push(a);
     a.addEventListener("play", () => all.forEach(p => { if (p !== a) p.pause(); }));
     sec.appendChild(c);
-  }
-  for (const s of song.sections) {
-    const b = document.createElement("button"); b.textContent = s.name; b.style.borderLeftColor = s.colour;
-    b.onclick = () => players.forEach(p => { p.currentTime = s.t; }); jump.appendChild(b);
   }
   main.insertBefore(sec, footer);
 }
